@@ -85,6 +85,7 @@ class Johor_Waktu_Solat_Plugin
         .jws-current-pill{display:inline-block;margin-left:8px;padding:3px 8px;border-radius:999px;background:#198754;color:#fff;font-size:10px;font-weight:700;vertical-align:middle}
         .jws-error{margin:14px;padding:10px;border:1px solid rgba(200,0,0,.25);background:rgba(200,0,0,.06);border-radius:10px}
         .jws-jhrsolat{margin-top:12px;font-size:11px;opacity:.65;text-align:right}
+        .jws-jhrsolat a{color:inherit;text-decoration:underline;text-underline-offset:2px}
         @media (max-width:560px){
             .jws-grid .jws-header{padding:14px;min-height:0}
             .jws-grid .jws-title{font-size:16px}
@@ -190,7 +191,7 @@ class Johor_Waktu_Solat_Plugin
         $out .= '</div>';
 
         if ($show_footer) {
-            $out .= '<div class="jws-jhrsolat">' . esc_html('© Hakcipta oleh Unit ICT, JAINJ') . '</div>';
+            $out .= '<div class="jws-jhrsolat">© Hakcipta oleh <a href="' . esc_url('https://ariff.my') . '">ariff.my</a></div>';
         }
 
         return $out;
