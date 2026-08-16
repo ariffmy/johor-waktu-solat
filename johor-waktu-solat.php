@@ -3,7 +3,7 @@
  * Plugin Name: Johor Waktu Solat (e-Solat XML)
  * Plugin URI: https://ariff.my
  * Description: Papar waktu solat Johor (JHR01–JHR04) dari e-Solat JAKIM melalui shortcode.
- * Version: 1.1.5
+ * Version: 1.1.6
  * Author: Ariff Samani
  * License: GPL2+
  * Requires at least: 5.2
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) exit;
 
 class Johor_Waktu_Solat_Plugin
 {
-    private $plugin_version = '1.1.4';
+    private $plugin_version = '1.1.6';
 
     private $default_zones = ['JHR01','JHR02','JHR03','JHR04'];
 
@@ -43,17 +43,18 @@ class Johor_Waktu_Solat_Plugin
     public function enqueue_styles()
     {
         $css = "
-        .jws-grid{display:grid;grid-template-columns:repeat(var(--jws-cols,4),minmax(0,1fr));gap:16px}
+        .jws-grid{display:grid;grid-template-columns:repeat(var(--jws-cols,4),minmax(0,1fr));gap:16px;color-scheme:only light}
+        .jws-grid,.jws-grid *{box-sizing:border-box}
         @media (max-width:1024px){.jws-grid{grid-template-columns:repeat(min(var(--jws-cols,4),2),minmax(0,1fr))}}
         @media (max-width:560px){.jws-grid{grid-template-columns:1fr}}
-        .jws-card{display:flex;flex-direction:column;border:1px solid rgba(15,81,50,.10);border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.06);height:100%}
+        .jws-grid .jws-card{display:flex;flex-direction:column;border:1px solid rgba(15,81,50,.10);border-radius:16px;background:#fff;color:#111827;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.06);height:100%;forced-color-adjust:none}
         .jws-card-inner{display:flex;flex-direction:column;flex:1}
         .jws-header{display:flex;justify-content:space-between;align-items:stretch;gap:12px;padding:16px 18px;background:linear-gradient(135deg,#0f5132,#198754);color:#fff;min-height:92px}
         .jws-header-left{display:flex;flex-direction:column;justify-content:center;min-width:0;flex:1}
         .jws-title{font-weight:700;margin:0;font-size:15px;line-height:1.35;color:#fff}
         .jws-hari{margin-top:6px;font-size:13px;line-height:1.2;opacity:.92}
         .jws-date-badge{display:flex;align-items:center;justify-content:center;align-self:center;text-align:center;min-width:112px;min-height:58px;padding:8px 12px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.16);border-radius:14px;font-size:12px;line-height:1.35;font-weight:600;backdrop-filter:blur(4px)}
-        .jws-body{padding:14px 14px 12px;flex:1}
+        .jws-grid .jws-body{padding:14px 14px 12px;flex:1;background:#fff;color:#111827}
         .jws-status-stack{display:flex;flex-direction:column;gap:8px;margin:0 0 12px 0}
         .jws-live,.jws-next,.jws-updated{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.45;margin:0}
         .jws-live{background:#e8f6ee;color:#0f5132;border:1px solid rgba(25,135,84,.18)}
@@ -72,17 +73,27 @@ class Johor_Waktu_Solat_Plugin
         .jws-next-outside .jws-next:before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:999px;background:linear-gradient(180deg,#5b9dff 0%,#2d6cdf 100%)}
         .jws-live-dot{flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:#198754;box-shadow:0 0 0 0 rgba(25,135,84,.45);animation:jwsPulse 1.8s infinite}
         @keyframes jwsPulse{0%{box-shadow:0 0 0 0 rgba(25,135,84,.45)}70%{box-shadow:0 0 0 8px rgba(25,135,84,0)}100%{box-shadow:0 0 0 0 rgba(25,135,84,0)}}
-        .jws-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
-        .jws-table tr td{padding:9px 10px;border-top:1px dashed rgba(0,0,0,.10);vertical-align:middle}
+        .jws-grid .jws-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;background:#fff;color:#111827;opacity:1}
+        .jws-grid .jws-table tbody,.jws-grid .jws-table tr{background:#fff;color:#111827;opacity:1}
+        .jws-grid .jws-table tr td{padding:9px 10px;border-top:1px dashed rgba(0,0,0,.10);background:#fff;color:#111827;vertical-align:middle;opacity:1;text-shadow:none;-webkit-text-fill-color:currentColor}
         .jws-table tr:first-child td{border-top:none}
-        .jws-table td:first-child{font-weight:600;width:44%;color:#1f2937}
-        .jws-table td:last-child{text-align:right;color:#111827}
-        .jws-row-current td{background:#eef8f2 !important}
-        .jws-row-current td:first-child{color:#0f5132;font-weight:700}
-        .jws-row-current td:last-child{font-weight:700;color:#0f5132}
+        .jws-grid .jws-table td:first-child{font-weight:600;width:44%;color:#1f2937}
+        .jws-grid .jws-table td:last-child{text-align:right;color:#111827}
+        .jws-grid .jws-table .jws-row-current td{background:#eef8f2 !important}
+        .jws-grid .jws-table .jws-row-current td:first-child{color:#0f5132;font-weight:700}
+        .jws-grid .jws-table .jws-row-current td:last-child{font-weight:700;color:#0f5132}
         .jws-current-pill{display:inline-block;margin-left:8px;padding:3px 8px;border-radius:999px;background:#198754;color:#fff;font-size:10px;font-weight:700;vertical-align:middle}
         .jws-error{margin:14px;padding:10px;border:1px solid rgba(200,0,0,.25);background:rgba(200,0,0,.06);border-radius:10px}
         .jws-jhrsolat{margin-top:12px;font-size:11px;opacity:.65;text-align:right}
+        @media (max-width:560px){
+            .jws-grid .jws-header{padding:14px;min-height:0}
+            .jws-grid .jws-title{font-size:16px}
+            .jws-grid .jws-date-badge{min-width:82px;min-height:44px;padding:7px 9px}
+            .jws-grid .jws-body{padding:12px}
+            .jws-grid .jws-table tr td{padding:10px 8px}
+            .jws-grid .jws-current-pill{display:block;width:max-content;margin:4px 0 0}
+            .jws-grid .jws-next-outside{padding:0 12px 12px}
+        }
         ";
         wp_register_style('jws-inline', false, [], $this->plugin_version);
         wp_enqueue_style('jws-inline');
